@@ -27,12 +27,12 @@
 - 前 표준프레임워크 유지보수
 - 前 표준프레임워크 4단계 구축
 
-![poster](./oc77.jpg)
+![poster](image/oc77.jpg)
     
-![photo](./image.jpg)
-![photo](./image1.jpg)
-![photo](./image2.jpg)
-![photo](./image3.jpg)
-![photo](./image4.jpg)
+![photo](image/image.jpg)
+![photo](image/image1.jpg)
+![photo](image/image2.jpg)
+![photo](image/image3.jpg)
+![photo](image/image4.jpg)
 
 #### ■ 참고 URL: https://open.egovframe.org/oc/products/seminarItem.do?nttId=19798&pageIndex=3

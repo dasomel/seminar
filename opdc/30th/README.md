@@ -12,8 +12,6 @@
     30차 세미나에서는 보너스 세션으로!! 전자정부 표준프레임워크 관련 정보를 제공하는
     표준프레임워크포털(www.egovframe.go.kr) 활용 Tip & 개발환경 설정 Tip을 알려드립니다^^
 
-#### <1부> 생
-
 #### <2부>
 #### ■ 주제 : eGovFrame 공통컴포넌트 활용법
 #### ■ 내용 :
@@ -31,8 +29,8 @@
 #### ■ 장소: 한국정보화진흥원 무교동청사 지하1층 대강당 (서울 중구)
 #### ■ 대상: 웹응용어플리케이션 개발자, 오픈커뮤니티 회원
 
-![poster](./30th_seminar.jpg)
+![poster](image/30th_seminar.jpg)
 
-![photo](./30차기술세미나현장.jpg)
+![photo](image/30차기술세미나현장.jpg)
 
 #### ■ 참고 URL: https://open.egovframe.org/oc/products/seminarItem.do?nttId=6099&pageIndex=12

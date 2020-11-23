@@ -26,6 +26,6 @@
 #### ■ 대상: 웹응용어플리케이션 개발자, 오픈커뮤니티 회원
 #### ■ 장소 후원 : 은행권청년창업재단 D.CAMP
     
-![poster](./oc71.png)
+![poster](image/oc71.png)
     
 #### ■ 참고 URL: https://open.egovframe.org/oc/products/seminarItem.do?nttId=18387&pageIndex=4

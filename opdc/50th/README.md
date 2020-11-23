@@ -23,8 +23,8 @@
 #### ■ 장소: 한국정보화진흥원 무교동청사 지하1층 대강당 (서울 중구)
 #### ■ 대상: 웹응용어플리케이션 개발자, 오픈커뮤니티 회원
     
-![poster](./oc50.png)
+![poster](image/oc50.png)
 
-![photo](./oc50현장.png)
+![photo](image/oc50현장.png)
     
 #### ■ 참고 URL: https://open.egovframe.org/oc/products/seminarItem.do?nttId=13274&pageIndex=8
