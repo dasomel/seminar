@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="RoleManage">
+
+    <typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="roleManageVO" type="egovframework.com.sec.rmt.service.RoleManageVO"/>
+    <typeAlias  alias="roleManage" type="egovframework.com.sec.rmt.service.RoleManage"/>
+
+    <resultMap id="role" class="egovframework.com.sec.rmt.service.RoleManageVO">
+        <result property="roleCode" column="ROLE_CODE" columnIndex="1"/>
+        <result property="roleNm" column="ROLE_NM" columnIndex="2"/>
+        <result property="rolePtn" column="ROLE_PTTRN" columnIndex="3"/>
+        <result property="roleDc" column="ROLE_DC" columnIndex="4"/>
+        <result property="roleTyp" column="ROLE_TY" columnIndex="5"/>
+        <result property="roleSort" column="ROLE_SORT" columnIndex="6"/>
+        <result property="roleCreatDe" column="ROLE_CREAT_DE" columnIndex="7"/>
+    </resultMap>
+
+
+    <select id="roleManageDAO.selectRole" resultMap="role">
+        <![CDATA[
+            SELECT ROLE_CODE, 
+                   ROLE_NM, 
+                   ROLE_PTTRN, 
+                   ROLE_DC, 
+                   ROLE_TY, 
+                   ROLE_SORT, 
+                   ROLE_CREAT_DE
+              FROM COMTNROLEINFO
+             WHERE ROLE_CODE = #roleCode#                
+        ]]>
+    </select>
+
+    <select id="roleManageDAO.selectRoleList" parameterClass="roleManageVO" resultMap="role">
+        <![CDATA[
+            SELECT  * 
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.* 
+              FROM  (
+
+            SELECT ROLE_CODE, 
+                   ROLE_NM, 
+                   ROLE_PTTRN, 
+                   ROLE_DC, 
+                   (SELECT CODE_NM 
+                      FROM COMTCCMMNDETAILCODE 
+                     WHERE CODE_ID = 'COM029' 
+                       AND CODE = ROLE_TY) AS ROLE_TY, 
+                   ROLE_SORT, 
+                   ROLE_CREAT_DE
+              FROM COMTNROLEINFO
+             WHERE 1=1
+        ]]>             
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                ROLE_NM LIKE '%'||#searchKeyword#||'%'
+            </isEqual>
+        <![CDATA[            
+            ORDER BY ROLE_CREAT_DE DESC 
+
+                    ) ALL_LIST
+                    ) Z
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]> 
+    </select>
+
+    <insert id="roleManageDAO.insertRole" parameterClass="roleManage">
+        <![CDATA[
+            INSERT INTO COMTNROLEINFO 
+                  ( ROLE_CODE
+                  , ROLE_NM
+                  , ROLE_PTTRN
+                  , ROLE_DC
+                  , ROLE_TY
+                  , ROLE_SORT
+                  , ROLE_CREAT_DE )
+           VALUES ( #roleCode#
+                  , #roleNm#
+                  , #rolePtn#
+                  , #roleDc#
+                  , #roleTyp#
+                  , #roleSort#
+                  , SYSDATETIME)
+        ]]>
+    </insert>
+
+    <update id="roleManageDAO.updateRole" parameterClass="roleManage">
+        <![CDATA[
+            UPDATE COMTNROLEINFO 
+               SET ROLE_NM=#roleNm#
+                 , ROLE_PTTRN=#rolePtn#
+                 , ROLE_DC=#roleDc#
+                 , ROLE_TY=#roleTyp#
+                 , ROLE_SORT=#roleSort#
+                 , ROLE_CREAT_DE=SYSDATETIME
+             WHERE ROLE_CODE=#roleCode#
+        ]]>
+    </update>
+
+    <delete id="roleManageDAO.deleteRole">
+        <![CDATA[
+            DELETE FROM COMTNROLEINFO 
+             WHERE ROLE_CODE=#roleCode#
+        ]]>
+    </delete>
+
+    <select id="roleManageDAO.selectAuthorListTotCnt" parameterClass="roleManageVO" resultClass="int">
+
+            SELECT COUNT(*) totcnt
+            FROM COMTNROLEINFO
+            WHERE 1=1
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                ROLE_NM LIKE '%'||#searchKeyword#||'%'
+            </isEqual>
+    </select>
+
+    <select id="roleManageDAO.selectRoleAllList" parameterClass="roleManageVO" resultMap="role">
+            SELECT ROLE_CODE, ROLE_NM, ROLE_PTTRN, ROLE_DC, ROLE_TY, ROLE_SORT, ROLE_CREAT_DE
+              FROM COMTNROLEINFO
+    </select>
+
+</sqlMap>

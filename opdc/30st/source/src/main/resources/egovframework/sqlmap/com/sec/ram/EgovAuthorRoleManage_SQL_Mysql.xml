@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AuthorRoleManage">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="authorRoleManageVO" type="egovframework.com.sec.ram.service.AuthorRoleManageVO"/>
+    <typeAlias  alias="authorRoleManage" type="egovframework.com.sec.ram.service.AuthorRoleManage"/>
+
+    <resultMap id="authorRole" class="egovframework.com.sec.ram.service.AuthorRoleManageVO">
+        <result property="roleCode" column="ROLE_CODE" columnIndex="1"/>
+        <result property="roleNm" column="ROLE_NM" columnIndex="2"/>
+        <result property="rolePtn" column="ROLE_PTTRN" columnIndex="3"/>
+        <result property="roleDc" column="ROLE_DC" columnIndex="4"/>
+        <result property="roleTyp" column="ROLE_TY" columnIndex="5"/>
+        <result property="roleSort" column="ROLE_SORT" columnIndex="6"/>
+        <result property="authorCode" column="AUTHOR_CODE" columnIndex="7"/>
+        <result property="regYn" column="REG_YN" columnIndex="8"/>
+        <result property="creatDt" column="CREAT_DT" columnIndex="9"/>
+    </resultMap>
+
+    <select id="authorRoleManageDAO.selectAuthorRoleList" parameterClass="authorRoleManageVO" resultMap="authorRole">
+        <![CDATA[
+            SELECT A.ROLE_CODE,
+                   A.ROLE_NM,
+                   A.ROLE_PTTRN,
+                   A.ROLE_DC,
+                   A.ROLE_TY,
+                   A.ROLE_SORT,
+                   B.AUTHOR_CODE,
+                   B.CREAT_DT,
+                   (CASE WHEN B.ROLE_CODE IS NULL THEN 'N'
+                         ELSE 'Y' 
+                     END) AS REG_YN
+              FROM COMTNROLEINFO A 
+                   LEFT OUTER JOIN (SELECT AUTHOR_CODE , ROLE_CODE, CREAT_DT FROM COMTNAUTHORROLERELATE WHERE AUTHOR_CODE = #searchKeyword#) B
+                ON A.ROLE_CODE = B.ROLE_CODE	
+             LIMIT #recordCountPerPage# OFFSET #firstIndex#	         
+        ]]>
+    </select>
+
+	<select id="authorRoleManageDAO.selectAuthorRoleListTotCnt" parameterClass="authorRoleManageVO" resultClass="int">
+
+			SELECT COUNT(*) totcnt
+              FROM COMTNROLEINFO A 
+                   LEFT OUTER JOIN (SELECT AUTHOR_CODE , ROLE_CODE, CREAT_DT FROM COMTNAUTHORROLERELATE WHERE AUTHOR_CODE = #searchKeyword#) B
+                ON A.ROLE_CODE = B.ROLE_CODE
+	</select>
+
+    <insert id="authorRoleManageDAO.insertAuthorRole" parameterClass="authorRoleManage">
+        <![CDATA[
+            INSERT INTO COMTNAUTHORROLERELATE 
+                  ( AUTHOR_CODE
+                  , ROLE_CODE
+                  , CREAT_DT)
+           VALUES ( #authorCode#
+                  , #roleCode#
+                  , now())
+        ]]>
+    </insert>
+
+    <delete id="authorRoleManageDAO.deleteAuthorRole">
+        <![CDATA[
+            DELETE FROM COMTNAUTHORROLERELATE 
+             WHERE AUTHOR_CODE=#authorCode#
+               AND ROLE_CODE=#roleCode#
+        ]]>
+    </delete>
+    
+</sqlMap>

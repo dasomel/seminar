@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AuthorGroup">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="AuthorGroupVO" type="egovframework.com.sec.rgm.service.AuthorGroupVO"/>
+    <typeAlias  alias="AuthorGroup" type="egovframework.com.sec.rgm.service.AuthorGroup"/>
+
+    <resultMap id="authorGroup" class="egovframework.com.sec.rgm.service.AuthorGroupVO">
+        <result property="userId" column="USER_ID" columnIndex="1"/>
+        <result property="userNm" column="USER_NM" columnIndex="2"/>
+        <result property="groupId" column="GROUP_ID" columnIndex="3"/>
+        <result property="mberTyCode" column="MBER_TY_CODE" columnIndex="4"/>
+        <result property="mberTyNm" column="MBER_TY_NM" columnIndex="5"/>
+        <result property="authorCode" column="AUTHOR_CODE" columnIndex="6"/>
+        <result property="regYn" column="REG_YN" columnIndex="8"/>
+        <result property="uniqId" column="ESNTL_ID" columnIndex="9"/>
+    </resultMap>
+
+    <select id="authorGroupDAO.selectAuthorGroupList" parameterClass="AuthorGroupVO" resultMap="authorGroup">
+            SELECT A.USER_ID, 
+                   A.USER_NM, 
+                   A.GROUP_ID,
+                   A.MBER_TY_CODE,
+                   (SELECT CODE_NM
+                      FROM COMTCCMMNDETAILCODE 
+                     WHERE CODE_ID = 'COM012'
+                       AND CODE = A.MBER_TY_CODE
+                       AND USE_AT = 'Y') AS MBER_TY_NM,
+                   B.AUTHOR_CODE, 
+                   (CASE WHEN B.SCRTY_DTRMN_TRGET_ID IS NULL THEN 'N'
+                         ELSE 'Y' 
+                     END) AS REG_YN,
+                    ESNTL_ID
+              FROM (SELECT MBER_ID USER_ID, MBER_NM USER_NM, GROUP_ID, 'USR01' MBER_TY_CODE, ESNTL_ID
+                      FROM COMTNGNRLMBER
+                     UNION ALL
+                    SELECT ENTRPRS_MBER_ID USER_ID, CMPNY_NM USER_NM, GROUP_ID, 'USR02' MBER_TY_CODE, ESNTL_ID 
+                      FROM COMTNENTRPRSMBER
+                     UNION ALL
+                    SELECT EMPLYR_ID USER_ID, USER_NM USER_NM, GROUP_ID, 'USR03' MBER_TY_CODE, ESNTL_ID 
+                      FROM COMTNEMPLYRINFO ) A LEFT OUTER JOIN COMTNEMPLYRSCRTYESTBS B
+                ON A.ESNTL_ID = B.SCRTY_DTRMN_TRGET_ID
+             WHERE 1 = 1    
+            <isNotEmpty property="searchKeyword">
+                <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                       A.USER_ID LIKE CONCAT('%' , #searchKeyword#, '%')
+                </isEqual>
+	            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+	                   A.USER_NM LIKE CONCAT('%' , #searchKeyword#, '%')
+	            </isEqual>
+	            <isEqual prepend="AND" property="searchCondition" compareValue="3">
+	                   A.GROUP_ID = #searchKeyword#
+	            </isEqual>
+            </isNotEmpty>
+             LIMIT #recordCountPerPage# OFFSET #firstIndex#
+    </select>
+
+	<insert id="authorGroupDAO.insertAuthorGroup" parameterClass="AuthorGroup">
+		<![CDATA[
+			INSERT INTO COMTNEMPLYRSCRTYESTBS 
+				  ( SCRTY_DTRMN_TRGET_ID
+                  , MBER_TY_CODE
+				  , AUTHOR_CODE)
+		   VALUES ( #uniqId#
+                  , #mberTyCode#
+                  , #authorCode#)
+		]]>
+	</insert>
+
+	<update id="authorGroupDAO.updateAuthorGroup" parameterClass="AuthorGroup">
+		<![CDATA[
+			UPDATE COMTNEMPLYRSCRTYESTBS 
+			   SET MBER_TY_CODE=#mberTyCode#
+                 , AUTHOR_CODE=#authorCode#
+		  	 WHERE SCRTY_DTRMN_TRGET_ID=#uniqId#
+		]]>
+	</update>
+
+	<delete id="authorGroupDAO.deleteAuthorGroup">
+		<![CDATA[
+			DELETE FROM COMTNEMPLYRSCRTYESTBS 
+			 WHERE SCRTY_DTRMN_TRGET_ID=#uniqId#
+		]]>
+	</delete>
+
+	<select id="authorGroupDAO.selectAuthorGroupListTotCnt" parameterClass="AuthorGroupVO" resultClass="int">
+
+            SELECT COUNT(*) AS totcnt
+              FROM (SELECT MBER_ID USER_ID, MBER_NM USER_NM, GROUP_ID, 'USR01' MBER_TY_CODE 
+                      FROM COMTNGNRLMBER
+                     UNION ALL
+                    SELECT ENTRPRS_MBER_ID USER_ID, CMPNY_NM USER_NM, GROUP_ID, 'USR02' MBER_TY_CODE 
+                      FROM COMTNENTRPRSMBER
+                     UNION ALL
+                    SELECT EMPLYR_ID USER_ID, USER_NM USER_NM, GROUP_ID, 'USR03' MBER_TY_CODE 
+                      FROM COMTNEMPLYRINFO ) A LEFT OUTER JOIN COMTNEMPLYRSCRTYESTBS B
+                ON A.USER_ID = B.SCRTY_DTRMN_TRGET_ID
+             WHERE 1 = 1   
+            <isNotEmpty property="searchKeyword">
+                <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                       A.USER_ID LIKE CONCAT('%' , #searchKeyword#, '%')
+                </isEqual>
+                <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                       A.USER_NM LIKE CONCAT('%' , #searchKeyword#, '%')
+                </isEqual>
+                <isEqual prepend="AND" property="searchCondition" compareValue="3">
+                       A.GROUP_ID = #searchKeyword#
+                </isEqual>
+            </isNotEmpty>
+	</select>
+
+</sqlMap>

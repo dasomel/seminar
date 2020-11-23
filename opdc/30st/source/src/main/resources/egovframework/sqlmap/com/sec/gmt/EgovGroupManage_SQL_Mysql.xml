@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="GroupManage">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="groupManageVO" type="egovframework.com.sec.gmt.service.GroupManageVO"/>
+    <typeAlias  alias="groupManage" type="egovframework.com.sec.gmt.service.GroupManage"/>
+
+	<resultMap id="group" class="egovframework.com.sec.gmt.service.GroupManageVO">
+        <result property="groupId" column="GROUP_ID" columnIndex="1"/>
+		<result property="groupNm" column="GROUP_NM" columnIndex="2"/>
+		<result property="groupDc" column="GROUP_DC" columnIndex="3"/>
+        <result property="groupCreatDe" column="GROUP_CREAT_DE" columnIndex="4"/>
+	</resultMap>
+
+    <select id="groupManageDAO.selectGroup" parameterClass="groupManageVO" resultMap="group">
+        <![CDATA[
+            SELECT GROUP_ID, GROUP_NM, GROUP_DC, GROUP_CREAT_DE
+              FROM COMTNAUTHORGROUPINFO 
+             WHERE GROUP_ID=#groupId#
+        ]]>
+    </select>
+
+    <select id="groupManageDAO.selectGroupList" parameterClass="groupManageVO" resultMap="group">
+
+            SELECT GROUP_ID, GROUP_NM, GROUP_DC, GROUP_CREAT_DE
+              FROM COMTNAUTHORGROUPINFO
+             WHERE 1=1
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                GROUP_NM LIKE CONCAT('%' , #searchKeyword#, '%')
+            </isEqual>
+            ORDER BY GROUP_CREAT_DE DESC
+            LIMIT #recordCountPerPage# OFFSET #firstIndex#
+    </select>
+
+	<insert id="groupManageDAO.insertGroup">
+		<![CDATA[
+			INSERT INTO COMTNAUTHORGROUPINFO 
+				  ( GROUP_ID
+				  , GROUP_NM
+				  , GROUP_DC
+				  , GROUP_CREAT_DE )
+		   VALUES ( #groupId#
+			      , #groupNm#
+				  , #groupDc#
+				  , now())
+		]]>
+	</insert>
+	
+	<update id="groupManageDAO.updateGroup" parameterClass="groupManage">
+		<![CDATA[
+			UPDATE COMTNAUTHORGROUPINFO 
+			   SET GROUP_NM=#groupNm#
+				 , GROUP_DC=#groupDc#
+				 , GROUP_CREAT_DE=now()
+		  	 WHERE GROUP_ID=#groupId#
+		]]>
+	</update>
+	
+	<delete id="groupManageDAO.deleteGroup">
+		<![CDATA[
+			DELETE FROM COMTNAUTHORGROUPINFO 
+			 WHERE GROUP_ID=#groupId#
+		]]>
+	</delete>
+	
+	<select id="groupManageDAO.selectGroupListTotCnt" parameterClass="groupManageVO" resultClass="int">
+
+			SELECT COUNT(*) totcnt
+			FROM COMTNAUTHORGROUPINFO
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				GROUP_NM LIKE CONCAT('%' , #searchKeyword#, '%')
+			</isEqual>
+	</select>
+
+</sqlMap>

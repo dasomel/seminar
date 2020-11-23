@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>	
+	<!-- 2011.07.01 : 4단계 기능 추가 (댓글관리 패키지 분리) -->
+	<sqlMap resource="egovframework/sqlmap/com/cop/cmt/EgovBBSComment_SQL_Mysql.xml"/>
+	
+	
+</sqlMapConfig>

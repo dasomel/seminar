@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<sqlMap resource="egovframework/sqlmap/com/cop/bbs/EgovBBSMaster_SQL_Mysql.xml"/>	
+	<sqlMap resource="egovframework/sqlmap/com/cop/bbs/EgovBoard_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/com/cop/bbs/EgovBBSLoneMaster_SQL_Mysql.xml"/>
+	
+	<!-- 2009.06.26 : 2단계 기능 추가 (댓글관리, 만족도조사) -->
+	<sqlMap resource="egovframework/sqlmap/com/cop/bbs/EgovBBSAddedOptions_SQL_Mysql.xml"/>
+	
+	
+	
+<sqlMap resource="egovframework/sqlmap/com/cop/bbs/EgovBBSUse_SQL_Mysql.xml"></sqlMap></sqlMapConfig>

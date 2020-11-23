@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd 
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd			
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+	
+	<bean id="egov.propertyConfigurer"
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:/egovframework/egovProps/globals.properties</value>
+            </list>
+        </property>
+    </bean>
+    <!-- 실행환경에서 빈이름 참조(EgovAbstractDAO) -->
+	<bean id="egov.lobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler" lazy-init="true" />
+	
+	
+	
+
+	<!-- SqlMap setup for iBATIS Database Layer -->
+	<bean id="egov.sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		
+		<property name="configLocations">
+			<list>
+				<value>classpath:/egovframework/sqlmap/config/${Globals.DbType}/*.xml</value>
+			</list>
+		</property>
+
+		<!-- property name="configLocation" value="WEB-INF/classes/egovframework/sqlmap/config/${Globals.DbType}/*.xml"/-->
+		
+		<!-- not appointed -->
+		<!-- 
+		<property name="configLocation" value="classpath:/egovframework/sqlmap/com/sql-map-config.xml"/>
+		-->
+
+		<!-- Oracle -->
+		<!-- 
+		<property name="configLocation" value="classpath:/egovframework/sqlmap/com/sql-map-config-oracle.xml"/>
+		-->
+		<!-- Mysql -->
+		<!-- 
+		<property name="configLocation" value="classpath:/egovframework/sqlmap/com/sql-map-config-mysql.xml"/>
+		-->
+		<!-- Altibase -->
+		<!-- 
+		<property name="configLocation" value="classpath:/egovframework/sqlmap/com/sql-map-config-altibase.xml"/>
+		-->
+		<!-- Tibero -->
+		<!-- 
+		<property name="configLocation" value="classpath:/egovframework/sqlmap/com/sql-map-config-tibero.xml"/>
+		-->
+
+		<property name="dataSource" ref="egov.dataSource"/>
+		
+		<property name="lobHandler" ref="egov.lobHandler"/>
+	</bean>
+	
+
+</beans>	

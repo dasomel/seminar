@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+<!--
+	수정일          수성자                          수정내용
+   ===========     ========      =================================================
+   2011.10.11		이기하			context-common.xml 파일에서 별도분리
+
+ ************************************************************************************************
+	0. 세션/시큐리티를 제외한 테스트위한 인증(더미)을 사용하는 빈 : 주석
+	
+	1. 세션을 이용한 인증을 사용하는 빈 : 주석
+	
+	2. 스프링 시큐리티를 이용한 인증을 사용할 빈 : 사용
+	   - 권한관리 패키지 설치 : egovframework-authormanage-2.0.0.zip
+	   - web.xml 설정 : springSecurityFilterChain, EgovSpringSecurityLogoutFilter, EgovSpringSecurityLoginFilter
+ ************************************************************************************************
+-->
+	<!--인증된 유저의 LoginVO, 권한, 인증 여부를 확인 할 수있는 서비스 클래스-->
+	<bean id="egovUserDetailsHelper" class="egovframework.com.cmm.util.EgovUserDetailsHelper">
+        <property name="egovUserDetailsService">
+        	<!-- 원하는 bean id를 아래에 ref 태그에 적용한다 -->
+            <ref bean="egovUserDetailsSecurityService" />
+        </property>
+    </bean>
+
+    <!-- 0. 세션/시큐리티를 제외한 테스트위한 인증(더미)을 사용하는 빈 -->
+    <!--
+    <bean id="egovTestUserDetailsService" class="egovframework.com.cmm.service.impl.EgovTestUserDetailsServiceImpl"/>
+    -->
+
+    <!-- 1. 세션을 이용한 인증을 사용하는 빈 -->
+    <!--
+    <bean id="egovUserDetailsSessionService" class="egovframework.com.cmm.service.impl.EgovUserDetailsSessionServiceImpl"/>
+    -->
+
+    <!-- 2. 스프링 시큐리티를 이용한 인증을 사용할 빈 -->
+    <bean id="egovUserDetailsSecurityService" class="egovframework.com.sec.ram.service.impl.EgovUserDetailsSecurityServiceImpl"/>
+</beans>

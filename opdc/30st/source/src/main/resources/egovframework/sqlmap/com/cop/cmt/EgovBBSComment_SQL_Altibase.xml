@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<!-- 
+	수정일                 수정자                          수정내용
+  =========     =======    =================================================
+  2011.9.7   	정진오     	 	resultMap id="commentDetail"   : FRST_REGISTER_ID -> FRST_REGISTER_NM 
+  							"BBSCommentDAO.selectComment"  : FRST_REGISTER_ID -> FRST_REGISTER_NM
+  							오라클 SQL MAP과 일치하도록 하기 위해 수정함						
+  2011.10.18       서준식               BBSCommentDAO.insertComment	 : select key 태그 삭제										
+-->
+<sqlMap namespace="BBSComment">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="Comment" type="egovframework.com.cop.bbs.service.Comment"/>
+	<typeAlias  alias="CommentVO" type="egovframework.com.cop.bbs.service.CommentVO"/>
+	
+	<resultMap id="commentList" class="egovframework.com.cop.bbs.service.CommentVO">
+		<result property="commentNo" column="ANSWER_NO" columnIndex="1"/>
+		<result property="nttId" column="NTT_ID" columnIndex="2"/>
+		<result property="bbsId" column="BBS_ID" columnIndex="3"/>
+		<result property="wrterId" column="WRTER_ID" columnIndex="4"/>
+		<result property="wrterNm" column="WRTER_NM" columnIndex="5"/>
+		<result property="commentPassword" column="PASSWORD" columnIndex="6"/>
+		<result property="commentCn" column="ANSWER" columnIndex="7"/>
+		<result property="useAt" column="USE_AT" columnIndex="8"/>
+		<result property="frstRegisterPnttm" column="FRST_REGIST_PNTTM" columnIndex="9"/>
+		<result property="frstRegisterNm" column="FRST_REGISTER_ID" columnIndex="10"/>
+	</resultMap>
+	
+	<resultMap id="commentDetail" class="egovframework.com.cop.bbs.service.Comment">
+		<result property="commentNo" column="ANSWER_NO" columnIndex="1"/>
+		<result property="nttId" column="NTT_ID" columnIndex="2"/>
+		<result property="bbsId" column="BBS_ID" columnIndex="3"/>
+		<result property="wrterId" column="WRTER_ID" columnIndex="4"/>
+		<result property="wrterNm" column="WRTER_NM" columnIndex="5"/>
+		<result property="commentPassword" column="PASSWORD" columnIndex="6"/>
+		<result property="commentCn" column="ANSWER" columnIndex="7"/>
+		<result property="useAt" column="USE_AT" columnIndex="8"/>
+		<result property="frstRegisterPnttm" column="FRST_REGIST_PNTTM" columnIndex="9"/>
+		<result property="frstRegisterNm" column="FRST_REGISTER_NM" columnIndex="10"/>
+	</resultMap>
+
+	<select id="BBSCommentDAO.selectCommentList" parameterClass="CommentVO" resultMap="commentList" >
+		<![CDATA[
+		SELECT * FROM ( SELECT rownum rn, TB.* FROM (
+			SELECT
+				a.ANSWER_NO, a.NTT_ID, a.BBS_ID, 
+				a.WRTER_ID, a.WRTER_NM, a.PASSWORD, a.ANSWER, a.USE_AT,
+				TO_CHAR(a.FRST_REGIST_PNTTM, 'YYYY-MM-DD HH24:MI:SS')
+				as FRST_REGIST_PNTTM,
+				b.USER_NM as FRST_REGISTER_ID
+			FROM
+				COMTNCOMMENT a
+			LEFT OUTER JOIN COMVNUSERMASTER b
+				ON a.FRST_REGISTER_ID = b.ESNTL_ID
+			WHERE
+				a.BBS_ID = #bbsId# AND a.NTT_ID = #nttId#
+			AND
+				a.USE_AT = 'Y'
+			ORDER BY a.FRST_REGIST_PNTTM ASC
+			) TB ) WHERE rn BETWEEN #subFirstIndex# + 1 AND #subFirstIndex# + #subRecordCountPerPage#
+		]]>				
+	</select>	
+	
+	<select id="BBSCommentDAO.selectCommentListCnt" parameterClass="CommentVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+			SELECT
+				COUNT(ANSWER_NO) as cnt
+			FROM
+				COMTNCOMMENT 
+			WHERE
+				BBS_ID = #bbsId# AND NTT_ID = #nttId#
+			AND
+				USE_AT = 'Y'
+		]]>			
+	</select>
+	
+	<insert id="BBSCommentDAO.insertComment" parameterClass="Comment" >
+		
+		<![CDATA[
+			INSERT INTO COMTNCOMMENT
+			(ANSWER_NO, NTT_ID, BBS_ID, WRTER_ID, WRTER_NM, PASSWORD, 
+			 ANSWER, USE_AT, 
+			 FRST_REGISTER_ID, FRST_REGIST_PNTTM
+			 )
+			VALUES
+			( #commentNo#, #nttId#, #bbsId#, #wrterId#, #wrterNm#, #commentPassword#, 
+			  #commentCn#, 'Y',
+			  #frstRegisterId#, SYSDATE
+			 )
+		]]>
+	</insert>
+	
+	<update id="BBSCommentDAO.deleteComment" parameterClass="CommentVO">
+		<![CDATA[
+			UPDATE COMTNCOMMENT
+			SET USE_AT = 'N'
+			WHERE ANSWER_NO = #commentNo#
+		]]>			
+	</update>
+	
+	<select id="BBSCommentDAO.selectComment" parameterClass="CommentVO" resultMap="commentDetail" >
+		<![CDATA[
+			SELECT
+				a.ANSWER_NO, a.NTT_ID, a.BBS_ID, 
+				a.WRTER_ID, a.WRTER_NM, a.PASSWORD, a.ANSWER, a.USE_AT,
+				TO_CHAR(a.FRST_REGIST_PNTTM, 'YYYY-MM-DD HH24:MI:SS') 
+				as FRST_REGIST_PNTTM,
+				b.USER_NM as FRST_REGISTER_NM
+			FROM
+				COMTNCOMMENT a
+			LEFT OUTER JOIN COMVNUSERMASTER b
+				ON a.FRST_REGISTER_ID = b.ESNTL_ID
+			WHERE
+				a.ANSWER_NO = #commentNo#
+
+		]]>				
+	</select> 
+
+ 	 <update id="BBSCommentDAO.updateComment" parameterClass="Comment">
+ 		<![CDATA[
+			UPDATE COMTNCOMMENT SET 
+				WRTER_NM = #wrterNm#,
+				PASSWORD = #commentPassword#,
+				ANSWER = #commentCn#,
+				LAST_UPDUSR_ID = #lastUpdusrId#,
+				LAST_UPDT_PNTTM = SYSDATE
+			WHERE ANSWER_NO = #commentNo# 
+ 		]]>
+ 	</update>
+ 	
+ 	<select id="BBSCommentDAO.getCommentPassword" parameterClass="Comment" resultClass="java.lang.String">
+		<![CDATA[
+			SELECT
+				PASSWORD
+			FROM
+				COMTNCOMMENT	
+			WHERE ANSWER_NO = #commentNo# 		
+		]]>
+	</select>
+</sqlMap>

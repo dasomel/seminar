@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<!-- 
+	수정일                 수정자                          수정내용
+  =========     =======    =================================================
+  2011.8.12   	서준식     	 	테이블 표준화에 따른 수정사항 반영
+  							RESTDE 컬럼에  RESTDE_DE  alias 지정
+
+-->
+<sqlMap namespace="RestdeManage">
+
+	<typeAlias  alias="egovMap"  type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="RestdeVO" type="egovframework.com.sym.cal.service.RestdeVO"/>
+	<typeAlias  alias="Restde"   type="egovframework.com.sym.cal.service.Restde"/>
+
+	<select id="RestdeManageDAO.selectNormalRestdePopup" parameterClass="Restde" resultClass="egovMap">
+		<![CDATA[
+            SELECT  '$year$'               YEAR
+                 ,  '$month$'              MONTH
+                 ,  DECODE(GREATEST(T_DUMMY.RNUM + 1 - $startWeekMonth$,0),0,'',DECODE(GREATEST(T_DUMMY.RNUM + 1 - $startWeekMonth$,$lastDayMonth$),$lastDayMonth$,TO_CHAR(T_DUMMY.RNUM + 1 - $startWeekMonth$),''))
+                                         DAY 
+                 ,  T_DUMMY.RNUM           CELL_NUM
+                 ,  T_DUMMY.WEEKS + 1      WEEKS
+                 ,  T_DUMMY.WEEK           WEEK
+                 ,  (
+                    SELECT  CASE (COUNT(*)) WHEN 0 THEN CASE T_DUMMY.WEEK WHEN 1 THEN 'Y' WHEN 7 THEN 'Y' ELSE 'N' END ELSE 'Y' END
+                      FROM  COMTNRESTDE 
+                     WHERE  RESTDE = LPAD('$year$',4,'0')
+                                      ||LPAD('$month$',2,'0')
+                                      ||LPAD(DECODE(GREATEST(T_DUMMY.RNUM + 1 - '$startWeekMonth$',0),0,'',DECODE(GREATEST(T_DUMMY.RNUM + 1 - '$startWeekMonth$','$lastDayMonth$'),'$lastDayMonth$',TO_CHAR(T_DUMMY.RNUM + 1 - '$startWeekMonth$'),''))
+                    			             ,2,'0'
+                    			            )
+                       AND  RESTDE_SE_CODE IN ('01','02')                                   
+                    ) REST_AT
+              FROM  (
+                    SELECT  (W.W*7) + D.D RNUM
+                         ,  W.W WEEKS
+                         ,  D.D WEEK
+                      FROM  (
+						    SELECT 0 W  FROM DUAL
+						    UNION ALL
+						    SELECT 1 FROM DUAL
+						    UNION ALL
+						    SELECT 2 FROM DUAL
+						    UNION ALL
+						    SELECT 3 FROM DUAL
+						    UNION ALL
+						    SELECT 4 FROM DUAL
+						    UNION ALL
+						    SELECT 5 FROM DUAL
+						    ) W,
+						    (
+						    SELECT 1 D FROM DUAL
+						    UNION ALL
+						    SELECT 2 FROM DUAL
+						    UNION ALL
+						    SELECT 3 FROM DUAL
+						    UNION ALL
+						    SELECT 4 FROM DUAL
+						    UNION ALL
+						    SELECT 5 FROM DUAL
+						    UNION ALL
+						    SELECT 6 FROM DUAL
+						    UNION ALL
+						    SELECT 7 FROM DUAL
+                            ) D
+                    ORDER BY (W.W*7) + D.D
+            ) T_DUMMY
+			ORDER BY T_DUMMY.RNUM            
+		]]>
+	</select>
+
+	<select id="RestdeManageDAO.selectAdministRestdePopup" parameterClass="Restde" resultClass="egovMap">
+		<![CDATA[
+            SELECT  '$year$'               YEAR
+                 ,  '$month$'              MONTH
+                 ,  DECODE(GREATEST(T_DUMMY.RNUM + 1 - $startWeekMonth$,0),0,'',DECODE(GREATEST(T_DUMMY.RNUM + 1 - $startWeekMonth$,$lastDayMonth$),$lastDayMonth$,TO_CHAR(T_DUMMY.RNUM + 1 - $startWeekMonth$),''))
+                                         DAY 
+                 ,  T_DUMMY.RNUM           CELL_NUM
+                 ,  T_DUMMY.WEEKS + 1      WEEKS
+                 ,  T_DUMMY.WEEK           WEEK
+                 ,  (
+                    SELECT  CASE (COUNT(*)) WHEN 0 THEN CASE T_DUMMY.WEEK WHEN 1 THEN 'Y' WHEN 7 THEN 'Y' ELSE 'N' END ELSE 'Y' END
+                      FROM  COMTNRESTDE 
+                     WHERE  RESTDE = LPAD('$year$',4,'0')
+                                      ||LPAD('$month$',2,'0')
+                                      ||LPAD(DECODE(GREATEST(T_DUMMY.RNUM + 1 - '$startWeekMonth$',0),0,'',DECODE(GREATEST(T_DUMMY.RNUM + 1 - '$startWeekMonth$','$lastDayMonth$'),'$lastDayMonth$',TO_CHAR(T_DUMMY.RNUM + 1 - '$startWeekMonth$'),''))
+                    			             ,2,'0'
+                    			            )
+                       AND  RESTDE_SE_CODE IN ('02','03')                                   
+                    ) REST_AT
+              FROM  (
+                    SELECT  (W.W*7) + D.D RNUM
+                         ,  W.W WEEKS
+                         ,  D.D WEEK
+                      FROM  (
+						    SELECT 0 W  FROM DUAL
+						    UNION ALL
+						    SELECT 1 FROM DUAL
+						    UNION ALL
+						    SELECT 2 FROM DUAL
+						    UNION ALL
+						    SELECT 3 FROM DUAL
+						    UNION ALL
+						    SELECT 4 FROM DUAL
+						    UNION ALL
+						    SELECT 5 FROM DUAL
+						    ) W,
+						    (
+						    SELECT 1 D FROM DUAL
+						    UNION ALL
+						    SELECT 2 FROM DUAL
+						    UNION ALL
+						    SELECT 3 FROM DUAL
+						    UNION ALL
+						    SELECT 4 FROM DUAL
+						    UNION ALL
+						    SELECT 5 FROM DUAL
+						    UNION ALL
+						    SELECT 6 FROM DUAL
+						    UNION ALL
+						    SELECT 7 FROM DUAL
+                            ) D
+                    ORDER BY (W.W*7) + D.D
+            ) T_DUMMY
+			ORDER BY T_DUMMY.RNUM            
+		]]>
+	</select>
+
+	<select id="RestdeManageDAO.selectNormalDayCal" parameterClass="Restde" resultClass="egovMap">
+		<![CDATA[
+			SELECT  '$year$'               YEAR
+			     ,  '$month$'              MONTH
+				 ,  '$day$'                DAY
+				 ,  $week$                 WEEK
+				 ,  $weeks$                WEEKS
+				 ,  $maxWeeks$             MAX_WEEKS
+				 ,  $lastDayMonth$         LAST_DAY_MONTH
+			     ,  (	SELECT  CASE (COUNT(*)) WHEN 0 THEN CASE $week$ WHEN 1 THEN 'Y' WHEN 7 THEN 'Y' ELSE 'N' END ELSE 'Y' END
+			              FROM  COMTNRESTDE 
+			             WHERE  RESTDE = LPAD('$year$',4,'0')||LPAD('$month$',2,'0')||LPAD('$day$',2,'0')
+			               AND  RESTDE_SE_CODE IN ('01','02')                                   
+			        ) REST_AT
+			  FROM  DUAL      
+		]]>
+	</select>
+	
+	<select id="RestdeManageDAO.selectNormalDayRestde" parameterClass="Restde" resultClass="egovMap">
+		<![CDATA[
+            SELECT  '$year$'     YEAR
+                 ,  '$month$'    MONTH
+                 ,  '$day$'      DAY
+                 ,  RESTDE
+                 ,  RESTDE_NM
+              FROM  COMTNRESTDE 
+             WHERE  RESTDE         = LPAD('$year$',4,'0')||LPAD('$month$',2,'0')||LPAD('$day$',2,'0')
+               AND  RESTDE_SE_CODE   IN ('01','02')       
+		]]>
+	</select>
+
+	<select id="RestdeManageDAO.selectNormalMonthRestde" parameterClass="Restde" resultClass="egovMap">
+		<![CDATA[
+            SELECT  '$year$'                YEAR
+                 ,  '$month$'               MONTH
+                 ,  TO_CHAR(TO_NUMBER( SUBSTR(RESTDE,7,2))) DAY
+                 ,  RESTDE
+                 ,  RESTDE_NM
+              FROM  COMTNRESTDE 
+             WHERE  RESTDE      LIKE LPAD('$year$',4,'0')||LPAD('$month$',2,'0')||'%'
+               AND  RESTDE_SE_CODE   IN ('01','02')       
+		]]>
+	</select>
+
+	<select id="RestdeManageDAO.selectAdministDayCal" parameterClass="Restde" resultClass="egovMap">
+		<![CDATA[
+			SELECT  '$year$'               YEAR
+			     ,  '$month$'              MONTH
+				 ,  '$day$'                DAY
+				 ,  $week$                 WEEK
+				 ,  $weeks$                WEEKS
+				 ,  $maxWeeks$             MAX_WEEKS
+				 ,  $lastDayMonth$         LAST_DAY_MONTH
+			     ,  (	SELECT  CASE (COUNT(*)) WHEN 0 THEN CASE $week$ WHEN 1 THEN 'Y' WHEN 7 THEN 'Y' ELSE 'N' END ELSE 'Y' END
+			              FROM  COMTNRESTDE 
+			             WHERE  RESTDE = LPAD('$year$',4,'0')||LPAD('$month$',2,'0')||LPAD('$day$',2,'0')
+			               AND  RESTDE_SE_CODE IN ('02','03')                                   
+			        ) REST_AT
+			  FROM  DUAL      
+		]]>
+	</select>
+	
+	<select id="RestdeManageDAO.selectAdministDayRestde" parameterClass="Restde" resultClass="egovMap">
+		<![CDATA[
+            SELECT  '$year$'     YEAR
+                 ,  '$month$'    MONTH
+                 ,  '$day$'      DAY
+                 ,  RESTDE
+                 ,  RESTDE_NM
+              FROM  COMTNRESTDE 
+             WHERE  RESTDE         = LPAD('$year$',4,'0')||LPAD('$month$',2,'0')||LPAD('$day$',2,'0')
+               AND  RESTDE_SE_CODE   IN ('02','03')       
+		]]>
+	</select>
+
+	<select id="RestdeManageDAO.selectAdministMonthRestde" parameterClass="Restde" resultClass="egovMap">
+		<![CDATA[
+            SELECT  '$year$'                YEAR
+                 ,  '$month$'               MONTH
+                 ,  TO_CHAR(TO_NUMBER(SUBSTR(RESTDE,7,2))) DAY
+                 ,  RESTDE
+                 ,  RESTDE_NM
+              FROM  COMTNRESTDE 
+             WHERE  RESTDE      LIKE LPAD('$year$',4,'0')||LPAD('$month$',2,'0')||'%'
+               AND  RESTDE_SE_CODE   IN ('02','03')       
+		]]>
+	</select>
+
+	<select id="RestdeManageDAO.selectRestdeList" parameterClass="RestdeVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT  * 
+			  FROM  (
+			SELECT ROWNUM RNUM, ALL_LIST.* 
+			  FROM  (
+			/* 구현 Sql */
+			SELECT  A.RESTDE_NO
+				 ,  A.RESTDE RESTDE_DE
+			     ,  A.RESTDE DBMS_KIND 
+				 ,  A.RESTDE_NM
+				 ,  A.RESTDE_DC
+				 ,  B.CODE_NM        RESTDE_SE
+				 ,  A.RESTDE_SE_CODE
+			  FROM  COMTNRESTDE         A
+			     ,  COMTCCMMNDETAILCODE B
+			 WHERE  B.CODE_ID        = 'COM017'
+			   AND  A.RESTDE_SE_CODE = B.CODE
+		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<![CDATA[A.RESTDE = #searchKeyword#]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				<![CDATA[A.RESTDE_NM LIKE '%$searchKeyword$%']]>
+			</isEqual>
+		<![CDATA[
+			/* 구현 Sql */
+				    ) ALL_LIST
+				    )
+			 WHERE  RNUM  > #firstIndex#
+			   AND  RNUM <= #firstIndex# + #recordCountPerPage#
+		]]>
+	</select>
+
+	<select id="RestdeManageDAO.selectRestdeListTotCnt" parameterClass="RestdeVO" resultClass="int">
+		<![CDATA[
+			SELECT  COUNT(*) totcnt 
+			  FROM  COMTNRESTDE         A
+			     ,  COMTCCMMNDETAILCODE B
+			 WHERE  B.CODE_ID        = 'COM017'
+			   AND  A.RESTDE_SE_CODE = B.CODE
+		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<![CDATA[RESTDE = #searchKeyword#]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				<![CDATA[RESTDE_NM LIKE '%$searchKeyword$%']]>
+			</isEqual>
+	</select>
+
+	<insert id="RestdeManageDAO.insertRestde">
+		<![CDATA[
+			INSERT 
+			  INTO  COMTNRESTDE
+			     (  RESTDE_NO
+				 ,  RESTDE
+				 ,  RESTDE_NM
+				 ,  RESTDE_DC
+				 ,  RESTDE_SE_CODE
+			     ,  FRST_REGIST_PNTTM
+			     ,  FRST_REGISTER_ID
+			     ,  LAST_UPDT_PNTTM
+			     ,  LAST_UPDUSR_ID
+			     ) 
+			VALUES
+			     (  #restdeNo#
+				 ,  #restdeDe#
+				 ,  #restdeNm#
+				 ,  #restdeDc#
+				 ,  #restdeSeCode#
+			     ,  SYSDATE
+			     ,  #frstRegisterId#
+			     ,  SYSDATE
+			     ,  #frstRegisterId#
+			     ) 
+		]]>
+	</insert>
+
+	<select id="RestdeManageDAO.selectRestdeDetail" parameterClass="Restde" resultClass="Restde">
+		<![CDATA[
+			SELECT  A.RESTDE_NO      restdeNo
+			     ,  A.RESTDE      restdeDe
+				 ,  A.RESTDE_NM      restdeNm
+				 ,  A.RESTDE_DC      restdeDc
+				 ,  B.CODE_NM        restdeSe
+				 ,  A.RESTDE_SE_CODE restdeSeCode
+			  FROM  COMTNRESTDE         A
+			     ,  COMTCCMMNDETAILCODE B
+			 WHERE  B.CODE_ID        = 'COM017'
+			   AND  A.RESTDE_SE_CODE = B.CODE
+               AND  A.RESTDE_NO      = #restdeNo#
+		]]>
+	</select>
+
+	<update id="RestdeManageDAO.updateRestde">
+		<![CDATA[
+            UPDATE  COMTNRESTDE 
+               SET  RESTDE_NM         = #restdeNm#
+				 ,  RESTDE_DC         = #restdeDc#
+				 ,  RESTDE_SE_CODE    = #restdeSeCode#
+                 ,  LAST_UPDT_PNTTM = sysdate
+                 ,  LAST_UPDUSR_ID    = #lastUpdusrId#
+             WHERE  RESTDE_NO         = #restdeNo#
+		]]>
+	</update>
+
+	<delete id="RestdeManageDAO.deleteRestde">
+		<![CDATA[
+            DELETE  
+              FROM  COMTNRESTDE     
+             WHERE  RESTDE_NO = #restdeNo#
+		]]>
+	</delete>
+	
+</sqlMap>            
