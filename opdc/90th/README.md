@@ -28,4 +28,6 @@
 - 슈퍼개발자K 시즌3 동상 수상
 - (전)전자정부 표준프레임워크 구축유지보수 사업 참여
 
+![poster](image/oc90.png)
+
 #### ■ 참고 URL: https://open.egovframe.org/oc/products/seminarItem.do?nttId=19923
