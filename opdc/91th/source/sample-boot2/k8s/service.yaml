@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample-boot2
+spec:
+  selector:
+    app: sample-boot2
+  ports:
+  - port: 8080
+    targetPort: 8080

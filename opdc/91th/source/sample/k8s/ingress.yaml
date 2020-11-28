@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: opdc-ingress
+spec:
+  rules:
+    - host: opdc.io
+      http:
+        paths:
+          - path: /war
+            backend:
+              serviceName: egov-sample
+              servicePort: 8080
+          - path: /maven
+            backend:
+              serviceName: sample-boot
+              servicePort: 8080
+    - host: opdc2.io
+      http:
+        paths:
+          - path: /gradle
+            backend:
+              serviceName: sample-boot2
+              servicePort: 8080

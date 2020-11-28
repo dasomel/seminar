@@ -1,0 +1,11 @@
+spec:
+  template:
+    spec:
+      containers:
+        - resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests:
+              cpu: 500m
+              memory: 500Mi

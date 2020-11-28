@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: egov-sample
+  labels:
+    app: egov-sample
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: egov-sample
+  template:
+    metadata:
+      labels:
+        app: egov-sample
+    spec:
+      containers:
+        - name: egov-sample
+          image: localhost:5000/egov-sample:1.0.0
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 0.5
+              memory: 0.5Gi
+            limits:
+              cpu: 0.5
+              memory: 0.5Gi

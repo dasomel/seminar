@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-boot2
+  labels:
+    app: sample-boot2
+spec:
+  replicas: 2
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: sample-boot2
+  template:
+    metadata:
+      labels:
+        app: sample-boot2
+    spec:
+      containers:
+        - name: sample-boot2
+          image: localhost:5000/sample-boot2:2.0.0
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 0.5
+              memory: 0.5Gi
+            limits:
+              cpu: 0.5
+              memory: 0.5Gi
