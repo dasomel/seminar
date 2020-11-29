@@ -19,7 +19,7 @@
         spec:
           containers:
             - name: sample-boot2
-              image: dasomel/sample-boot2:version
+              image: localhost:5000/sample-boot2:2.0.0
               ports:
                 - containerPort: 8080
               imagePullPolicy: Always
@@ -36,14 +36,11 @@
     metadata:
       name: sample-boot2
     spec:
-      type: NodePort
       selector:
         app: sample-boot2
       ports:
-      - protocol: TCP
-        port: 8080
+      - port: 8080
         targetPort: 8080
-        nodePort: 30102
 ## 3. build & dockerizing
     ./gradlew clean war bootRepackage
     docker build . -t localhost:5000/sample-boot2:2.0.0

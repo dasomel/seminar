@@ -37,7 +37,7 @@
         spec:
           containers:
             - name: egov-sample
-              image: dasomel/egov-sample:1.0
+              image: localhost:5000/egov-sample:1.0.0
               ports:
                 - containerPort: 8080
               imagePullPolicy: Always

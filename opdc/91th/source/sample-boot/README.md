@@ -1,13 +1,17 @@
 # 표준프레임워크 샘플 프로젝트
 ## 1. kubernetes-maven-plugin 설정(pom.xml)
     <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+    </plugin>
+    <plugin>
         <groupId>org.eclipse.jkube</groupId>
         <artifactId>kubernetes-maven-plugin</artifactId>
         <version>1.0.2</version>
         <configuration>
             <images>
                 <image>
-                    <name>dasomel/egov-sampleboot:${timestamp}</name>
+                    <name>localhost:5000/sample-boot:${timestamp}</name>
                     <build>
                         <from>fabric8/java-centos-openjdk8-jre</from>
                         <maintainer>dasomell@gmail.com</maintainer>
