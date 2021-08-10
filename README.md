@@ -3,6 +3,7 @@ Announcement
 
 |일자|제목|구분|
 |---|---|---|
+|2021.08.10|[오픈소스를 활용한 DevOps Toolchain 이해](/nipa/113th/README.md)|정보통신산업진흥원|
 |2021.06.09|[나도 해보자! 표준프레임워크 "GitHub“ 컨트리뷰터 되어보기(실전편)](/opdc/95th/README.md)|오픈커뮤니티|
 |2020.12.16|[표준프레임워크와 오픈커뮤니티 성장한 이야기2("평범한 회사원에서 경험과 지식을 나누는 슈퍼개발자로~")](/opdc/10th_anniversary/README.md)|오픈커뮤니티|
 |2020.12.01|[나도 해보자! Hands-on Cloud on eGov-Framework](/opdc/91th/README.md)|오픈커뮤니티|
@@ -24,22 +25,3 @@ Announcement
 |2014.10.22|[나도 해보자! 표준프레임워크 3.X 업그레이드](/opdc/50th/README.md)|오픈커뮤니티|
 |2014.03.26|[나도 해보자 표준프레임워크!!](/opdc/43th/README.md)|오픈커뮤니티|
 |2013.02.27|[eGovFrame 2.5 배치프레임워크 기능과 공통컴포넌트 사용법 소개](/opdc/30th/README.md)|오픈커뮤니티|
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
