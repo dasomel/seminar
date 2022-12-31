@@ -1,0 +1,43 @@
+plugins {
+    id 'java'
+    id 'war'
+    id 'org.springframework.boot' version '2.4.5'
+    id 'io.spring.dependency-management' version '1.1.0'
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+repositories {
+    maven { url 'https://repo1.maven.org/maven2/' }
+    maven { url 'https://maven.egovframe.kr/maven/' }
+    jcenter()
+}
+
+configurations {
+    all {
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+
+    implementation ('org.egovframe.rte:org.egovframe.rte.ptl.mvc:4.0.0') {
+        exclude(group: 'org.egovframe.rte', module: 'spring-modules-validation')
+    }
+    implementation 'org.springmodules:spring-modules-validation:0.9'
+    implementation 'org.egovframe.rte:org.egovframe.rte.psl.dataaccess:4.0.0'
+    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.idgnr:4.0.0'
+    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.property:4.0.0'
+    compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
+    implementation 'javax.servlet:jstl'
+    implementation 'taglibs:standard:1.1.2'
+    implementation 'org.antlr:antlr:3.5'
+    implementation 'org.hsqldb:hsqldb'
+
+}
