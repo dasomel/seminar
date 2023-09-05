@@ -13,7 +13,7 @@ Announcement
 | 2020.12.16 | [표준프레임워크와 오픈커뮤니티 성장한 이야기2("평범한 회사원에서 경험과 지식을 나누는 슈퍼개발자로~")](/opdc/10th_anniversary/README.md) | 오픈커뮤니티                         |
 | 2020.12.01 | [나도 해보자! Hands-on Cloud on eGov-Framework](/opdc/91th/README.md)                              | 오픈커뮤니티                         |
 | 2020.11.30 | [자바기반 SW개발 및 시스템 관리 트랙](/university/gwangju/2020/README.md)                                   | 광주대학교                          |
-| 2020.10.15 | [2020년 표준프레임워크 정보화사업담당자 온라인 교육](/government/nia/README.md)                                    | NIA                            |
+| 2020.10.15 | [2020년 표준프레임워크 정보화사업담당자 온라인 교육](/government/nia/2020/README.md)                               | NIA                            |
 | 2020.10.15 | [나도 해보자! 클라우드 서비스와 프로젝트 이해하기](/opdc/90th/README.md)                                           | 오픈커뮤니티                         |
 | 2020.01.22 | [나도 해보자! Cloud Project with Kubernetes](/opdc/88th/README.md)                                 | 오픈커뮤니티                         |
 | 2019.07.02 | 2019년 Open Tech Lounge(DT활용을 위한 개발환경)                                                         | 사내                             |
