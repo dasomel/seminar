@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: egovframe-web-sample
+  labels:
+    app: egovframe-web-sample
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: egovframe-web-sample
+  template:
+    metadata:
+      labels:
+        app: egovframe-web-sample
+    spec:
+      containers:
+        - name: egovframe-web-sample
+          image: 192.168.100.100:30002/cp-portal-repository/egovframe-web-sample:4.1.0
+          ports:
+            - name: web
+              containerPort: 8080
+          imagePullPolicy: IfNotPresent
+      imagePullSecrets:
+        - name: egovregistrykey
+

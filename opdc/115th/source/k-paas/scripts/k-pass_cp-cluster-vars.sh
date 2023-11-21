@@ -1,0 +1,20 @@
+#!/bin/bash
+
+export MASTER_NODE_HOSTNAME=master
+export MASTER_NODE_PUBLIC_IP=192.168.100.100
+export MASTER_NODE_PRIVATE_IP=192.168.100.100
+
+## Worker Node Count Info
+export WORKER_NODE_CNT=3
+
+## Add Worker Node Info
+export WORKER1_NODE_HOSTNAME=worker01
+export WORKER1_NODE_PRIVATE_IP=192.168.100.101
+export WORKER2_NODE_HOSTNAME=worker02
+export WORKER2_NODE_PRIVATE_IP=192.168.100.102
+export WORKER3_NODE_HOSTNAME=worker03
+export WORKER3_NODE_PRIVATE_IP=192.168.100.103
+
+## Storage Type Info (eg. nfs, rook-ceph)
+export STORAGE_TYPE=nfs
+export NFS_SERVER_PRIVATE_IP=192.168.100.100

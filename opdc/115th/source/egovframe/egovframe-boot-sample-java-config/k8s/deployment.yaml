@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: egovframe-boot-sample-java-config
+  labels:
+    app: egovframe-boot-sample-java-config
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: egovframe-boot-sample-java-config
+  template:
+    metadata:
+      labels:
+        app: egovframe-boot-sample-java-config
+    spec:
+      containers:
+        - name: egovframe-boot-sample-java-config
+          image: 192.168.100.100:30002/cp-portal-repository/egovframe-boot-sample-java-config:4.1.0
+          ports:
+            - name: web
+              containerPort: 8080
+          imagePullPolicy: IfNotPresent
+      imagePullSecrets:
+        - name: egovregistrykey

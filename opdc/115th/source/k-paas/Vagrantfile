@@ -1,0 +1,41 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant_Box         = "ubuntu/focal64"
+Vagrant_Provider    = "virtualbox"
+Vagrant_API_Version = "2"
+NODE_IP             = "192.168.100."
+ANSIBLE_SERVER_IP   = "192.168.100.200"
+
+Vagrant.configure(Vagrant_API_Version) do |config|
+  config.vm.box_check_update = true
+  config.vm.provider Vagrant_Provider do |vb|
+    vb.cpus = 4
+    vb.memory = 6144
+  end
+
+  # Worker Node
+  (1..3).each do |i|
+    config.vm.define "worker0#{i}" do |node|
+      node.vm.box = Vagrant_Box
+      node.vm.box_download_insecure = true
+      node.vm.hostname = "worker0#{i}"
+      node.vm.network "private_network", ip: NODE_IP + "10#{i}"
+      node.vm.provision "shell", path: "./scripts/00.common_setting.sh", privileged: false
+    end
+  end
+
+  # Master Node
+  config.vm.define "master" do |node|
+    node.vm.box = Vagrant_Box
+    node.vm.box_download_insecure = true
+    node.vm.hostname = "master"
+    node.vm.network "private_network", ip: NODE_IP + "100"
+    node.vm.provision "shell", path: "./scripts/00.common_setting.sh", privileged: false
+    node.vm.provision "shell", path: "./scripts/01.ssh_setting.sh", privileged: false
+    node.vm.provision "shell", path: "./scripts/02.nfs_server.sh", privileged: false
+    node.vm.provision "shell", path: "./scripts/03.install_k-pass.sh", privileged: false
+    node.vm.provision "shell", path: "./scripts/04.install_k-pass_portal.sh", privileged: false
+  end
+
+end
