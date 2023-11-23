@@ -4,6 +4,7 @@ Announcement
 | 일자         | 제목                                                                                            | 구분                             |
 |------------|-----------------------------------------------------------------------------------------------|--------------------------------|
 | 2023.11.22 | [eGovFrame X K-PaaS 콜라보 세미나](/opdc/115th/README.md)                                           | 오픈커뮤니티                         |
+| 2023.10.20 | [DEVOCEAN Tech Day(5th) 발표](/opdc/115th/README.md)                                            | DEVOCEAN                       |
 | 2023.10.18 | [정보화사업담당자 대상 전자정부 표준프레임워크 실시간 온라인 교육](/government/nia/2023/README.md)                         | NIA                            |
 | 2023.07.03 | [오픈소스를 활용한 web 보안정책](/openinfradays/2023/README.md)                                           | OpenInfra Community Days Korea |
 | 2022.12.28 | [나도 해보자!표준레임워크 샘플게시판 활용](/opdc/106th/README.md)                                               | 오픈커뮤니티                         |
