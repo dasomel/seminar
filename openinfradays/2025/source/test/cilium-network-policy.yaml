@@ -1,0 +1,28 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: curl-fqdn-precise
+  namespace: ns-test
+spec:
+  endpointSelector:
+    matchLabels:
+      run: curl
+  egress:
+    - toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": "istio-system"
+    - toFQDNs:
+        - matchName: httpbin.org
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+  egressDeny:
+    - toEntities:
+        - world

@@ -1,0 +1,284 @@
+# Prometheus 데이터소스
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://prometheus-server.monitoring:80
+        access: proxy
+        isDefault: true
+        jsonData:
+          timeInterval: 15s
+
+# 대시보드 프로바이더 (파일 기반)
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+
+# 대표 대시보드 자동 임포트 (Grafana.com gnetId 사용)
+dashboards:
+  default:
+    # Kubernetes / Compute Resources / Cluster
+    k8s-cluster-resources:
+      gnetId: 315
+      revision: 3
+      datasource: Prometheus
+    # Kubernetes / Compute Resources / Namespace (Pods)
+    k8s-namespace-resources:
+      gnetId: 7249
+      revision: 1
+      datasource: Prometheus
+    # Kubernetes / Compute Resources / Pod
+    k8s-pod-resources:
+      gnetId: 747
+      revision: 6
+      datasource: Prometheus
+    # Node Exporter Full (노드 상세)
+    node-exporter-full:
+      gnetId: 1860
+      revision: 32
+      datasource: Prometheus
+    # Kubernetes / API Server
+    k8s-apiserver:
+      gnetId: 12006
+      revision: 1
+      datasource: Prometheus
+    # Kubernetes / Kubelet
+    # -------------------------
+    # Cilium (데이터플레인/정책/에이전트)
+    # -------------------------
+
+    cilium-agent-metrics:
+      gnetId: 16611       # Cilium Agent Metrics
+      revision: 2
+      datasource: Prometheus
+
+    Cilium-v1.12-Hubble-Metrics:
+      gnetId: 16613       # Hubble (L7/L4 플로우/트래픽 관측)
+      revision: 2
+      datasource: Prometheus
+
+    cilium-operator-metrics:
+      gnetId: 16610       # Cilium Operator
+      revision: 2
+      datasource: Prometheus
+
+    cilium-network-policy:
+      gnetId: 15512       # Cilium Network Policy Overview
+      revision: 1
+      datasource: Prometheus
+
+    cilium-dns-and-kubeproxy-replacement:
+      gnetId: 15513       # DNS metrics / kube-proxy replacement 상태
+      revision: 1
+      datasource: Prometheus
+
+    # -------------------------
+    # Istio Ambient (ztunnel/waypoint)
+    # -------------------------
+
+    istio-ambient-ztunnel:
+      gnetId: 20641       # Istio Ambient ztunnel metrics overview
+      revision: 2
+      datasource: Prometheus
+
+    istio-ambient-waypoint:
+      gnetId: 20640       # Waypoint proxy metrics (L7)
+      revision: 2
+      datasource: Prometheus
+
+    istio-ambient-service:
+      gnetId: 20639       # Ambient 서비스 관점 대시보드
+      revision: 2
+      datasource: Prometheus
+
+    # 일반 Istio(메시 공통)도 함께 유용
+    istio-mesh:
+      gnetId: 7645        # Istio Mesh Dashboard
+      revision: 32
+      datasource: Prometheus
+
+    istio-workload:
+      gnetId: 7636        # Istio Workload Dashboard
+      revision: 32
+      datasource: Prometheus
+
+    istio-service:
+      gnetId: 7630        # Istio Service Dashboard
+      revision: 32
+      datasource: Prometheus
+
+    istio-ambient-quickstart:
+      json: |
+        {
+          "title": "Istio Ambient Quickstart",
+          "timezone": "browser",
+          "schemaVersion": 39,
+          "version": 1,
+          "refresh": "30s",
+          "panels": [
+            {
+              "type": "row",
+              "title": "Ztunnel (DaemonSet)",
+              "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 }
+            },
+            {
+              "type": "stat",
+              "title": "Ztunnel Pods",
+              "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 },
+              "targets": [
+                {
+                  "expr": "count(up{job=~\".*ztunnel.*\"}==1)",
+                  "legendFormat": "ready"
+                }
+              ]
+            },
+            {
+              "type": "timeseries",
+              "title": "Ztunnel CPU (sum)",
+              "gridPos": { "h": 8, "w": 9, "x": 6, "y": 1 },
+              "targets": [
+                {
+                  "expr": "sum(rate(process_cpu_seconds_total{job=~\".*ztunnel.*\"}[5m]))",
+                  "legendFormat": "cpu"
+                }
+              ]
+            },
+            {
+              "type": "timeseries",
+              "title": "Ztunnel Memory RSS (sum)",
+              "gridPos": { "h": 8, "w": 9, "x": 15, "y": 1 },
+              "targets": [
+                {
+                  "expr": "sum(process_resident_memory_bytes{job=~\".*ztunnel.*\"})",
+                  "legendFormat": "rss"
+                }
+              ]
+            },
+            {
+              "type": "row",
+              "title": "Waypoint (Envoy)",
+              "gridPos": { "h": 1, "w": 24, "x": 0, "y": 9 }
+            },
+            {
+              "type": "stat",
+              "title": "Waypoint Pods",
+              "gridPos": { "h": 4, "w": 6, "x": 0, "y": 10 },
+              "targets": [
+                {
+                  "expr": "count(up{job=~\".*waypoint.*\"}==1)",
+                  "legendFormat": "ready"
+                }
+              ]
+            },
+            {
+              "type": "timeseries",
+              "title": "HTTP Requests (waypoint total)",
+              "gridPos": { "h": 8, "w": 9, "x": 6, "y": 10 },
+              "targets": [
+                {
+                  "expr": "sum(rate(istio_requests_total{reporter=\"destination\"}[5m]))",
+                  "legendFormat": "req/s"
+                }
+              ]
+            },
+            {
+              "type": "timeseries",
+              "title": "HTTP p50/p90/p99 Latency (ms)",
+              "gridPos": { "h": 8, "w": 9, "x": 15, "y": 10 },
+              "targets": [
+                {
+                  "expr": "histogram_quantile(0.5, sum(rate(istio_request_duration_milliseconds_bucket{reporter=\"destination\"}[5m])) by (le))",
+                  "legendFormat": "p50"
+                },
+                {
+                  "expr": "histogram_quantile(0.9, sum(rate(istio_request_duration_milliseconds_bucket{reporter=\"destination\"}[5m])) by (le))",
+                  "legendFormat": "p90"
+                },
+                {
+                  "expr": "histogram_quantile(0.99, sum(rate(istio_request_duration_milliseconds_bucket{reporter=\"destination\"}[5m])) by (le))",
+                  "legendFormat": "p99"
+                }
+              ],
+              "fieldConfig": { "defaults": { "unit": "ms" }, "overrides": [] }
+            },
+            {
+              "type": "row",
+              "title": "By Namespace (Traffic)",
+              "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 }
+            },
+            {
+              "type": "table",
+              "title": "Top NS by RPS (destination)",
+              "gridPos": { "h": 8, "w": 12, "x": 0, "y": 19 },
+              "targets": [
+                {
+                  "expr": "topk(10, sum(rate(istio_requests_total{reporter=\"destination\"}[5m])) by (destination_workload_namespace))",
+                  "legendFormat": "{{destination_workload_namespace}}"
+                }
+              ]
+            },
+            {
+              "type": "table",
+              "title": "Top NS by 5xx RPS",
+              "gridPos": { "h": 8, "w": 12, "x": 12, "y": 19 },
+              "targets": [
+                {
+                  "expr": "topk(10, sum(rate(istio_requests_total{reporter=\"destination\", response_code=~\"5..\"}[5m])) by (destination_workload_namespace))",
+                  "legendFormat": "{{destination_workload_namespace}}"
+                }
+              ]
+            }
+          ]
+        }
+
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 472
+  runAsGroup: 472
+  fsGroup: 472
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  seccompProfile:
+    type: RuntimeDefault
+
+containerSecurityContext:
+  runAsNonRoot: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+  seccompProfile:
+    type: RuntimeDefault
+
+persistence:
+  enabled: true
+
+adminPassword: admin
+
+initChownData:
+  enabled: false
+
+route:
+  main:
+    enabled: true
+    parentRefs:
+      - name: grafana-ingress
+        namespace: istio-system
+    backendRefs:
+      - name: grafana
+        namespace: monitoring
+        port: 80

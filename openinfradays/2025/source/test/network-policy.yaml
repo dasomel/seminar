@@ -1,0 +1,94 @@
+# Istio Ambient 기본 통신만 허용
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-istio-ambient-basic
+  namespace: ns-test
+spec:
+  podSelector:
+    matchLabels:
+      app: web-test
+  policyTypes:
+    - Ingress
+  ingress:
+    # Istio 시스템에서 오는 트래픽만 허용
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: istio-system
+      ports:
+        - protocol: TCP
+          port: 8080
+        - protocol: TCP
+          port: 15008
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: web-test-egress-deny
+  namespace: ns-test
+spec:
+  podSelector:
+    matchLabels:
+      app: web-test
+  policyTypes:
+    - Egress
+  egress:
+    # DNS만 허용
+    - to: []
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # Istio 시스템만 허용
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: istio-system
+    # httpbin.org IP 대역 허용 (AWS us-east-1 기반)
+    - to:
+        - ipBlock:
+            cidr: 52.0.0.0/8    # AWS IP 범위
+        - ipBlock:
+            cidr: 34.0.0.0/8    # AWS IP 범위
+        - ipBlock:
+            cidr: 54.0.0.0/8    # AWS IP 범위
+      ports:
+        - protocol: TCP
+          port: 443
+    # 네임스페이스 내부만 허용
+    - to:
+        - podSelector: {}
+    # 특정 IP 대역만 허용 (httpbin.org의 IP 대역)
+    # 주의: 이 방법은 IP가 변경될 수 있어 권장하지 않음
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: web-test-basic
+  namespace: ns-test
+spec:
+  podSelector:
+    matchLabels:
+      app: web-test
+  policyTypes:
+    - Ingress
+    - Egress
+  egress:
+    - ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: istio-system
+    - to:
+        - podSelector: {}
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: istio-system

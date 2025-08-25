@@ -1,0 +1,34 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: inject-seccomp-and-hardening-for-waypoint
+spec:
+  background: false
+  rules:
+    - name: inject-seccomp-and-hardening-waypoint
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - ns-test
+              selector:
+                matchLabels:
+                  gateway.networking.k8s.io/gateway-name: web-test-waypoint
+      mutate:
+        patchStrategicMerge:
+          spec:
+            securityContext:
+              seccompProfile:
+                type: RuntimeDefault
+              runAsNonRoot: true
+            containers:
+              - name: istio-proxy
+                securityContext:
+                  allowPrivilegeEscalation: false
+                  capabilities:
+                    drop:
+                      - "ALL"
+                  seccompProfile:
+                    type: RuntimeDefault

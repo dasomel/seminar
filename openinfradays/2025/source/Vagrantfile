@@ -1,0 +1,80 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+#   $vm_provider = "vmware_desktop"
+  $vm_provider = "virtualbox"
+  $box_image = "bento/ubuntu-24.04"
+  $box_version = "202502.21.0"
+  $vm_subnet = "192.168.33"                            # VMware 기본 NAT
+
+  config.vbguest.auto_update = true
+  config.vm.provider $vm_provider do |vb|
+    vb.customize ['modifyvm', :id, '--nictype1', 'virtio']
+    vb.customize ['modifyvm', :id, '--nictype2', 'virtio']
+    vb.customize ["modifyvm", :id, "--ioapic", "on"]
+    vb.customize ["modifyvm", :id, "--accelerate3d", "off"]
+  end
+
+  # 마스터 노드 설정
+  (1..3).each do |i|
+    config.vm.define "master#{i}" do |node|
+      node.vm.box = $box_image
+      node.vm.box_version = $box_version
+      node.vm.hostname = "master0#{i}"
+      node.vm.network "private_network", ip: "192.168.33.1#{i}" # 정적 IP 추가
+
+      node.vm.provider $vm_provider do |vm|
+        vm.name = "master#{i}"
+        vm.cpus = 2
+        vm.memory = 4096
+      end
+#       node.vm.provision "shell", path: "./guest_additions_install.sh", privileged: true
+      node.vm.provision "shell", inline: "echo =============== START master#{i} - COMMON SETTING ======================"
+      node.vm.provision "shell", path: "./scripts/01.all_common_setting.sh", privileged: false
+      node.vm.provision "shell", inline: "echo =============== E N D master#{i} - COMMON SETTING ======================"
+      node.vm.provision "shell", inline: "echo =============== START master#{i} - NFS SETTING ======================"
+      node.vm.provision "shell", path: "./scripts/02.master_nfs_server.sh", privileged: false
+      node.vm.provision "shell", inline: "echo =============== E N D master#{i} - NFS SETTING ======================"
+      node.vm.provision "shell", inline: "echo =============== START master#{i} - PREREQUISITES ======================"
+      node.vm.provision "shell", path: "./scripts/10.prerequisites.sh", privileged: false
+      node.vm.provision "shell", inline: "echo =============== E N D master#{i} - PREREQUISITES ======================"
+      node.vm.provision "shell", inline: "echo =============== START master#{i} - RKE2 Install ======================"
+      node.vm.provision "shell", path: "./scripts/11.rke2.sh", privileged: true
+      node.vm.provision "shell", inline: "echo =============== E N D master#{i} - RKE2 Install ======================"
+      node.vm.provision "shell", inline: "echo =============== START master#{i} - VIP SETTING ======================"
+      node.vm.provision "shell", path: "./scripts/12.kube-vip.sh", privileged: true
+      node.vm.provision "shell", inline: "echo =============== E N D master#{i} - VIP SETTING ======================"
+    end
+  end
+
+  # 워커 노드 설정
+  (1..3).each do |i|
+    config.vm.define "worker#{i}" do |node|
+      node.vm.box = $box_image
+      node.vm.box_version = $box_version
+      node.vm.hostname = "worker0#{i}"
+      node.vm.network "private_network", ip: "192.168.33.2#{i}" # 정적 IP 추가
+
+      node.vm.provider $vm_provider do |vm|
+        vm.name = "worker#{i}"
+        vm.cpus = 4
+        vm.memory = 6072
+      end
+#       node.vm.provision "shell", path: "./guest_additions_install.sh", privileged: true
+      node.vm.provision "shell", inline: "echo =============== START worker#{i} - COMMON_SETTING ======================"
+      node.vm.provision "shell", path: "./scripts/01.all_common_setting.sh", privileged: false
+      node.vm.provision "shell", inline: "echo =============== E N D worker#{i} - COMMON_SETTING ======================"
+      node.vm.provision "shell", inline: "echo =============== START worker#{i} - NFS_SETTING ======================"
+      node.vm.provision "shell", path: "./scripts/02.master_nfs_server.sh", privileged: false
+      node.vm.provision "shell", inline: "echo =============== E N D worker#{i} - NFS_SETTING ======================"
+      node.vm.provision "shell", inline: "echo =============== START worker#{i} - PREREQUISITES ======================"
+      node.vm.provision "shell", path: "./scripts/10.prerequisites.sh", privileged: false
+      node.vm.provision "shell", inline: "echo =============== E N D worker#{i} - PREREQUISITES ======================"
+      node.vm.provision "shell", inline: "echo =============== START worker#{i} - AGENT Install ======================"
+      node.vm.provision "shell", path: "./scripts/13.agent.sh", privileged: true
+      node.vm.provision "shell", inline: "echo =============== E N D worker#{i} - AGENT Install ======================"
+    end
+  end
+
+end

@@ -1,0 +1,33 @@
+nfs:
+  server: 192.168.33.11
+  path: /home/share/nfs
+  mountOptions:
+    - nfsvers=4.2   # NFS 버전 (권장값: 4.2)
+    - rsize=1048576 # 읽기 버퍼 크기 (권장값: 1MB)
+    - wsize=1048576 # 쓰기 버퍼 크기 (권장값: 1MB)
+    - retrans=2     # 재전송 횟수 (권장값: 2)
+    - nconnect=4    # 병렬 TCP 연결 수 (권장값: 4)
+    - hard          # 하드 마운트 (권장값: hard)
+    - intr          # 인터럽트 가능
+    - timeo=600     # 타임아웃 시간 (권장값: 600ms)
+    - retrans=2     # 재전송 횟수 (권장값: 2)
+
+storageClass:
+  defaultClass: true
+  reclaimPolicy: Retain
+  pathPattern: "${.PVC.namespace}/${.PVC.annotations.nfs.io/storage-path}/${.PVC.name}"
+  accessModes: ReadWriteMany
+  archiveOnDelete: true       # PVC 삭제 시 하위 디렉토리 보관
+  allowVolumeExpansion: true
+  # volumeBindingMode: Immediate  # 필요 시 WaitForFirstConsumer로 변경
+
+rbac:
+  create: true
+
+resources: {}
+#  limits:
+#    cpu: 100m
+#    memory: 128Mi
+#  requests:
+#    cpu: 100m
+#    memory: 128Mi

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-test
+  namespace: ns-test
+  labels:
+    app: web-test
+    istio.io/dataplane-mode: ambient
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-test
+  template:
+    metadata:
+      labels:
+        app: web-test
+        # 파드 라벨에도 ambient 선언(네임스페이스 라벨만으로도 동작하지만 명시 유지)
+        istio.io/dataplane-mode: ambient
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 3000
+        fsGroup: 2000
+        seccompProfile:
+          type: RuntimeDefault
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: gateway.networking.k8s.io/gateway-name
+                    operator: In
+                    values: ["istio-gateway"]
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: nginx
+          image: nginxinc/nginx-unprivileged:latest
+          ports:
+            - containerPort: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]

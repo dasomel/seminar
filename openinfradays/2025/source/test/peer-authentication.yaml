@@ -1,0 +1,9 @@
+# Ambient mTLS STRICT 강제
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: ns-test
+spec:
+  mtls:
+    mode: STRICT

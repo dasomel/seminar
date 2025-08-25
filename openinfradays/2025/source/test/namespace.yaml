@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ns-test
+  labels:
+    # Ambient 활성화(네임스페이스 단위)
+    istio.io/dataplane-mode: ambient
+    # Waypoint 사용 선언(네임스페이스 단위) - 아래 waypoint.yaml의 이름과 일치
+    istio.io/use-waypoint: web-test-waypoint

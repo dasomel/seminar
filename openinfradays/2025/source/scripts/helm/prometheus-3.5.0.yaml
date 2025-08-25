@@ -1,0 +1,58 @@
+configmapReload:
+  prometheus:
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+      seccompProfile:
+        type: RuntimeDefault
+
+server:
+  securityContext:
+    runAsUser: 65534
+    runAsNonRoot: true
+    runAsGroup: 65534
+    fsGroup: 65534
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    seccompProfile:
+      type: RuntimeDefault
+  containerSecurityContext: # Prometheus Server 컨테이너별로 추가
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    seccompProfile:
+      type: RuntimeDefault
+
+alertmanager:
+  enabled: false
+
+prometheus-node-exporter:
+  namespaceOverride: "node-metrics"
+  hostNetwork: false
+  # hostPort는 restricted에서 금지됩니다. 사용하지 않도록 설정
+  hostPID: false
+  extraArgs:
+    - --collector.filesystem.ignored-fs-types=vboxsf
+  containerSecurityContext:
+    capabilities:
+      drop: ["ALL"]
+    seccompProfile:
+      type: RuntimeDefault
+  securityContext:
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: ["ALL"]
+    seccompProfile:
+      type: RuntimeDefault
+  resources: { }
+
+
+prometheus-pushgateway:
+  enabled: false

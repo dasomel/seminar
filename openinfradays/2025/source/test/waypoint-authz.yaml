@@ -1,0 +1,20 @@
+# Waypoint에서 L7 인가 테스트(예: GET만 허용)
+# - 대상(Service) 단위로 L7 정책을 적용하려면 AuthorizationPolicy + targetRefs 사용
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: web-test-allow-get
+  namespace: ns-test
+spec:
+  targetRefs:
+    - kind: Service
+      name: web-test-service
+  rules:
+    - to:
+        - operation:
+            methods: ["GET"]
+            paths: ["/"]      # 루트만 허용
+    - to:
+        - operation:
+            methods: ["GET"]
+            paths: ["/favicon.ico"]

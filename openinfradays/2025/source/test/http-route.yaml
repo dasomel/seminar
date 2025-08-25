@@ -1,0 +1,21 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: web-test-httproute-shared
+  namespace: ns-test
+spec:
+  parentRefs:
+    - name: istio-gateway
+      namespace: istio-system
+      sectionName: http
+  hostnames:
+    - test.test
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: web-test-service
+          port: 80
+          namespace: ns-test

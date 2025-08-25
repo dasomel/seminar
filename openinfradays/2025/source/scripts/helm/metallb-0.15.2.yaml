@@ -1,0 +1,26 @@
+speaker:
+  # FRR/watchfrr가 데몬 제어·소켓 chown 등에 root 권한을 요구
+  containerSecurityContext:
+    privileged: true
+    allowPrivilegeEscalation: true
+    runAsUser: 0
+    runAsGroup: 0
+    seccompProfile:
+      type: RuntimeDefault
+    capabilities:
+      add:
+        - NET_ADMIN
+        - NET_RAW
+        - SYS_ADMIN
+
+controller:
+  # 컨트롤러는 비루트로 유지 가능
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    seccompProfile:
+      type: RuntimeDefault
+
+prometheus:
+  enabled: false  # 모니터링 비활성화로 보안 강화

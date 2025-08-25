@@ -1,0 +1,19 @@
+auth:
+  strategy: "anonymous"
+
+deployment:
+  image_pull_policy: "IfNotPresent"
+  security_context:
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    seccompProfile:
+      type: RuntimeDefault
+
+external_services:
+  prometheus:
+    url: "http://prometheus-server.monitoring:80"
+  grafana:
+    internal_url: "http://grafana.monitoring:80"

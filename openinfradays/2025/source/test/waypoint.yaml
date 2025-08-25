@@ -1,0 +1,24 @@
+# Ambient Waypoint(Envoy L7 프록시)
+# - gatewayClassName: istio-waypoint
+# - ambient에서는 HTTPRoute 등 Gateway API 리소스를 통해 L7 정책/경로를 적용
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: web-test-waypoint
+  namespace: ns-test
+spec:
+  gatewayClassName: istio-waypoint
+  listeners:
+    - name: hbone
+      protocol: HBONE
+      port: 15008
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: test.test
+      allowedRoutes:
+        namespaces:
+          from: All
+        kinds:
+          - kind: HTTPRoute
+
